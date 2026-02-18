@@ -1,11 +1,8 @@
-import { motion } from "framer-motion";
-import { Shield, Menu, X, User } from "lucide-react";
-import { useState } from "react";
+import { Shield, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
   const location = useLocation();
 
   const links = [
@@ -23,7 +20,7 @@ const Navbar = () => {
             <Shield className="h-4 w-4 text-primary" />
           </div>
           <span className="font-display text-sm font-bold tracking-widest text-foreground">
-            NEXUS<span className="text-primary">VPN</span>
+            Mozhno<span className="text-primary">VPN</span>
           </span>
         </Link>
 
@@ -43,38 +40,8 @@ const Navbar = () => {
             <User className="h-4 w-4" /> Войти
           </Button>
         </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X /> : <Menu />}
-        </Button>
       </div>
 
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="glass-strong border-t border-border/50 md:hidden"
-        >
-          <div className="flex flex-col gap-1 p-4">
-            {links.map((l) => (
-              <Link key={l.href} to={l.href} onClick={() => setOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start">
-                  {l.label}
-                </Button>
-              </Link>
-            ))}
-            <Button variant="cyber" className="mt-2">
-              <User className="h-4 w-4" /> Войти
-            </Button>
-          </div>
-        </motion.div>
-      )}
     </nav>
   );
 };
