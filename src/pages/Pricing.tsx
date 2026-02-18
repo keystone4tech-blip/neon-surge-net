@@ -2,43 +2,19 @@ import Navbar from "@/components/Navbar";
 import BottomNav from "@/components/BottomNav";
 import TariffCard from "@/components/TariffCard";
 import { motion } from "framer-motion";
+import { useTariffs } from "@/hooks/useTariffs";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const tariffs = [
-  {
-    name: "Старт",
-    duration: "1 месяц",
-    price: 150,
-    pricePerMonth: 150,
-    features: ["WireGuard протокол", "Безлимитный трафик", "1 устройство", "10+ серверов"],
-  },
-  {
-    name: "Оптимальный",
-    duration: "3 месяца",
-    price: 400,
-    pricePerMonth: 133,
-    savings: "50₽",
-    features: ["Все из «Старт»", "3 устройства", "Приоритетная поддержка", "Выбор сервера"],
-  },
-  {
-    name: "Продвинутый",
-    duration: "6 месяцев",
-    price: 700,
-    pricePerMonth: 117,
-    popular: true,
-    savings: "200₽",
-    features: ["Все из «Оптимальный»", "5 устройств", "Выделенный IP", "Ранний доступ"],
-  },
-  {
-    name: "Максимум",
-    duration: "1 год",
-    price: 1200,
-    pricePerMonth: 100,
-    savings: "600₽",
-    features: ["Все из «Продвинутый»", "10 устройств", "VIP поддержка", "Бонус +30 дней"],
-  },
-];
+const durationLabel = (days: number) => {
+  if (days <= 30) return "1 месяц";
+  if (days <= 90) return "3 месяца";
+  if (days <= 180) return "6 месяцев";
+  return "1 год";
+};
 
 const Pricing = () => {
+  const { data: tariffs, isLoading } = useTariffs();
+
   return (
     <div className="min-h-screen bg-background cyber-grid pb-16 md:pb-0">
       <Navbar />
@@ -57,9 +33,22 @@ const Pricing = () => {
         </motion.div>
 
         <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {tariffs.map((t, i) => (
-            <TariffCard key={i} {...t} onSelect={() => {}} />
-          ))}
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-80 rounded-xl" />
+              ))
+            : tariffs?.map((t) => (
+                <TariffCard
+                  key={t.id}
+                  name={t.name}
+                  duration={durationLabel(t.duration_days)}
+                  price={t.price_rub}
+                  pricePerMonth={Math.round(t.price_rub / (t.duration_days / 30))}
+                  features={t.features}
+                  popular={t.priority === 3}
+                  onSelect={() => {}}
+                />
+              ))}
         </div>
       </div>
       <BottomNav />

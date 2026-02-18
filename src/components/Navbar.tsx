@@ -1,16 +1,28 @@
-import { Shield, User } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Shield, User, LogOut } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAdmin, signOut } = useAuth();
 
   const links = [
     { href: "/", label: "Главная" },
     { href: "/pricing", label: "Тарифы" },
-    { href: "/profile", label: "Профиль" },
-    { href: "/admin", label: "Админ" },
+    ...(user ? [{ href: "/profile", label: "Профиль" }] : []),
+    ...(isAdmin ? [{ href: "/admin", label: "Админ" }] : []),
   ];
+
+  const handleAuth = async () => {
+    if (user) {
+      await signOut();
+      navigate("/");
+    } else {
+      navigate("/auth");
+    }
+  };
 
   return (
     <nav className="fixed top-0 z-50 w-full glass-strong">
@@ -36,12 +48,19 @@ const Navbar = () => {
               </Button>
             </Link>
           ))}
-          <Button variant="cyber" size="sm" className="ml-2">
-            <User className="h-4 w-4" /> Войти
+          <Button variant="cyber" size="sm" className="ml-2" onClick={handleAuth}>
+            {user ? (
+              <>
+                <LogOut className="h-4 w-4" /> Выйти
+              </>
+            ) : (
+              <>
+                <User className="h-4 w-4" /> Войти
+              </>
+            )}
           </Button>
         </div>
       </div>
-
     </nav>
   );
 };

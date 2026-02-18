@@ -14,16 +14,304 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      payments: {
+        Row: {
+          amount: number
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          method: string
+          receipt_url: string | null
+          status: string
+          subscription_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          method?: string
+          receipt_url?: string | null
+          status?: string
+          subscription_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          method?: string
+          receipt_url?: string | null
+          status?: string
+          subscription_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          phone: string | null
+          referral_code: string | null
+          referred_by: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          phone?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          phone?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      referral_events: {
+        Row: {
+          bonus_days: number
+          created_at: string
+          event_type: string
+          id: string
+          invitee_id: string
+          inviter_id: string
+        }
+        Insert: {
+          bonus_days?: number
+          created_at?: string
+          event_type?: string
+          id?: string
+          invitee_id: string
+          inviter_id: string
+        }
+        Update: {
+          bonus_days?: number
+          created_at?: string
+          event_type?: string
+          id?: string
+          invitee_id?: string
+          inviter_id?: string
+        }
+        Relationships: []
+      }
+      servers: {
+        Row: {
+          country_code: string
+          created_at: string
+          current_users: number
+          id: string
+          ip_address: string
+          load_percent: number
+          location: string
+          max_users: number
+          name: string
+          panel_url: string | null
+          status: string
+        }
+        Insert: {
+          country_code?: string
+          created_at?: string
+          current_users?: number
+          id?: string
+          ip_address: string
+          load_percent?: number
+          location: string
+          max_users?: number
+          name: string
+          panel_url?: string | null
+          status?: string
+        }
+        Update: {
+          country_code?: string
+          created_at?: string
+          current_users?: number
+          id?: string
+          ip_address?: string
+          load_percent?: number
+          location?: string
+          max_users?: number
+          name?: string
+          panel_url?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          start_date: string
+          status: string
+          tariff_id: string
+          user_id: string
+          wireguard_config: string | null
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          start_date?: string
+          status?: string
+          tariff_id: string
+          user_id: string
+          wireguard_config?: string | null
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          start_date?: string
+          status?: string
+          tariff_id?: string
+          user_id?: string
+          wireguard_config?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_tariff_id_fkey"
+            columns: ["tariff_id"]
+            isOneToOne: false
+            referencedRelation: "tariffs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tariffs: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_days: number
+          features: Json | null
+          id: string
+          is_active: boolean
+          max_devices: number
+          name: string
+          price_rub: number
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_days: number
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          max_devices?: number
+          name: string
+          price_rub: number
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_days?: number
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          max_devices?: number
+          name?: string
+          price_rub?: number
+          priority?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tickets: {
+        Row: {
+          admin_reply: string | null
+          created_at: string
+          id: string
+          message: string
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_reply?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_reply?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +438,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
