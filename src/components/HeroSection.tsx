@@ -1,14 +1,43 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useUserData";
 
 const HeroSection = () => {
+  const { user } = useAuth();
+  const { data: subscription } = useSubscription();
+  const navigate = useNavigate();
+
+  // Hide "Начать бесплатно" if user has/had a subscription
+  const hasTrialUsed = !!subscription;
+
+  const handleFreeTrial = () => {
+    if (!user) {
+      navigate("/auth");
+    } else {
+      navigate("/pricing");
+    }
+  };
+
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden cyber-grid">
       {/* Ambient glows */}
       <div className="pointer-events-none absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-primary/5 blur-[120px]" />
       <div className="pointer-events-none absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-secondary/5 blur-[120px]" />
+
+      {/* Floating orbs for parallax feel */}
+      <motion.div
+        className="pointer-events-none absolute top-20 left-10 h-64 w-64 rounded-full bg-primary/5 blur-[80px]"
+        animate={{ y: [0, -30, 0], x: [0, 15, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute bottom-40 right-10 h-48 w-48 rounded-full bg-secondary/8 blur-[60px]"
+        animate={{ y: [0, 20, 0], x: [0, -10, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
 
       <div className="container relative mx-auto px-4 pt-20">
         <div className="mx-auto max-w-3xl text-center">
@@ -39,11 +68,11 @@ const HeroSection = () => {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
           >
-            <Link to="/pricing">
-              <Button variant="cyber" size="xl" className="glitch-hover">
+            {!hasTrialUsed && (
+              <Button variant="cyber" size="xl" className="glitch-hover" onClick={handleFreeTrial}>
                 Начать бесплатно <ArrowRight className="h-5 w-5" />
               </Button>
-            </Link>
+            )}
             <Link to="/pricing">
               <Button variant="cyber-outline" size="lg">
                 Тарифы от 150₽/мес
