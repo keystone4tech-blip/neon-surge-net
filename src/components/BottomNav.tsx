@@ -1,16 +1,18 @@
 import { Home, CreditCard, User, Shield } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-
-const navItems = [
-  { href: "/", label: "Главная", icon: Home },
-  { href: "/pricing", label: "Тарифы", icon: CreditCard },
-  { href: "/profile", label: "Профиль", icon: User },
-  { href: "/admin", label: "Админ", icon: Shield },
-];
+import { useAuth } from "@/hooks/useAuth";
 
 const BottomNav = () => {
   const location = useLocation();
+  const { user, isAdmin } = useAuth();
+
+  const navItems = [
+    { href: "/", label: "Главная", icon: Home },
+    { href: "/pricing", label: "Тарифы", icon: CreditCard },
+    ...(user ? [{ href: "/profile", label: "Профиль", icon: User }] : [{ href: "/auth", label: "Войти", icon: User }]),
+    ...(isAdmin ? [{ href: "/admin", label: "Админ", icon: Shield }] : []),
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 glass-strong border-t border-border/50 md:hidden">

@@ -3,8 +3,15 @@ import BottomNav from "@/components/BottomNav";
 import ProfileDashboard from "@/components/ProfileDashboard";
 import ReferralStats from "@/components/ReferralStats";
 import { motion } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
+import { Navigate } from "react-router-dom";
 
 const Profile = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+  if (!user) return <Navigate to="/auth" replace />;
+
   return (
     <div className="min-h-screen bg-background cyber-grid pb-16 md:pb-0">
       <Navbar />

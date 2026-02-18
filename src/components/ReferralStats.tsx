@@ -2,16 +2,21 @@ import { motion } from "framer-motion";
 import { Users, Gift, TrendingUp, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useProfile } from "@/hooks/useUserData";
+import { useReferralStats } from "@/hooks/useUserData";
 
 const ReferralStats = () => {
   const [copied, setCopied] = useState(false);
-  const referralCode = "CYBER-X7K9";
-  const referrals = 12;
-  const bonusDays = 36;
-  const conversions = 4;
+  const { data: profile } = useProfile();
+  const { data: stats } = useReferralStats();
+
+  const referralCode = profile?.referral_code ?? "...";
+  const referrals = stats?.totalReferrals ?? 0;
+  const bonusDays = stats?.bonusDays ?? 0;
+  const conversions = stats?.conversions ?? 0;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`https://vpn.example.com/ref/${referralCode}`);
+    navigator.clipboard.writeText(`${window.location.origin}/auth?ref=${referralCode}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -53,18 +58,18 @@ const ReferralStats = () => {
       <div className="space-y-2">
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>Прогресс до награды</span>
-          <span>4/5 конверсий</span>
+          <span>{conversions}/5 конверсий</span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-muted">
           <motion.div
             initial={{ width: 0 }}
-            animate={{ width: "80%" }}
+            animate={{ width: `${Math.min(100, (conversions / 5) * 100)}%` }}
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="h-full rounded-full bg-gradient-to-r from-primary to-secondary"
           />
         </div>
         <p className="text-xs text-muted-foreground">
-          Ещё 1 конверсия — и вы получите <span className="text-primary">бесплатный месяц</span>!
+          Ещё {Math.max(0, 5 - conversions)} конверсий — и вы получите <span className="text-primary">бесплатный месяц</span>!
         </p>
       </div>
     </div>
