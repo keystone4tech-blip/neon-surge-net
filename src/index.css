@@ -129,6 +129,50 @@
   .glitch-hover:hover {
     animation: glitch 0.3s ease-in-out;
   }
+
+  /* Animated gradient border for navbar */
+  .animated-gradient-border {
+    background: linear-gradient(
+      90deg,
+      hsl(186 100% 50%),
+      hsl(280 98% 54%),
+      hsl(320 100% 60%),
+      hsl(186 100% 50%)
+    );
+    background-size: 300% 100%;
+    animation: gradient-slide 3s linear infinite;
+  }
+
+  /* Animated gradient button for registration */
+  .animated-gradient-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  .animated-gradient-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      hsl(186 100% 50% / 0.3),
+      hsl(280 98% 54% / 0.3),
+      hsl(320 100% 60% / 0.3),
+      hsl(186 100% 50% / 0.3)
+    );
+    background-size: 300% 100%;
+    animation: gradient-slide 2s linear infinite;
+    z-index: 0;
+    border-radius: inherit;
+  }
+
+  /* Floating particles background */
+  .bg-particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
 }
 
 @keyframes glitch {
@@ -140,9 +184,9 @@
   100% { transform: translate(0); }
 }
 
-@keyframes scan-line {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+@keyframes gradient-slide {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
 }
 
 @keyframes pulse-neon {
