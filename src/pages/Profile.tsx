@@ -1,11 +1,12 @@
 import Navbar from "@/components/Navbar";
+import BottomNav from "@/components/BottomNav";
 import ProfileDashboard from "@/components/ProfileDashboard";
 import ReferralStats from "@/components/ReferralStats";
 import { motion } from "framer-motion";
 
 const Profile = () => {
   return (
-    <div className="min-h-screen bg-background cyber-grid">
+    <div className="min-h-screen bg-background cyber-grid pb-16 md:pb-0">
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-20">
         <motion.h1
@@ -33,6 +34,7 @@ const Profile = () => {
           </motion.div>
         </div>
       </div>
+      <BottomNav />
     </div>
   );
 };

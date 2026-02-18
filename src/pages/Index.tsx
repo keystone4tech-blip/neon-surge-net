@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import BottomNav from "@/components/BottomNav";
 import HeroSection from "@/components/HeroSection";
 import FeaturesGrid from "@/components/FeaturesGrid";
 import TariffCard from "@/components/TariffCard";
@@ -41,7 +42,7 @@ const tariffs = [
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
       <Navbar />
       <HeroSection />
       <FeaturesGrid />
@@ -75,11 +76,12 @@ const Index = () => {
       <footer className="border-t border-border/50 py-10">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
           <p className="font-display text-xs tracking-widest">
-            NEXUS<span className="text-primary">VPN</span> © 2025
+            Mozhno<span className="text-primary">VPN</span> © 2025
           </p>
           <p className="mt-2">Безопасность и свобода в интернете</p>
         </div>
       </footer>
+      <BottomNav />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import BottomNav from "@/components/BottomNav";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState("users");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-20">
         <motion.h1
@@ -225,6 +226,7 @@ const Admin = () => {
           )}
         </motion.div>
       </div>
+      <BottomNav />
     </div>
   );
 };

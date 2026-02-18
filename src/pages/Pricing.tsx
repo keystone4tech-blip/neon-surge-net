@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import BottomNav from "@/components/BottomNav";
 import TariffCard from "@/components/TariffCard";
 import { motion } from "framer-motion";
 
@@ -39,7 +40,7 @@ const tariffs = [
 
 const Pricing = () => {
   return (
-    <div className="min-h-screen bg-background cyber-grid">
+    <div className="min-h-screen bg-background cyber-grid pb-16 md:pb-0">
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-20">
         <motion.div
@@ -61,6 +62,7 @@ const Pricing = () => {
           ))}
         </div>
       </div>
+      <BottomNav />
     </div>
   );
 };
