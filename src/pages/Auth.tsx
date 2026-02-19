@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Shield, Mail, Phone, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Shield, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,11 +11,11 @@ import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import BottomNav from "@/components/BottomNav";
 
+const isPhone = (value: string) => /^\+?\d{7,15}$/.test(value.replace(/[\s()-]/g, ""));
+
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [authMethod, setAuthMethod] = useState<"email" | "phone">("email");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,11 +37,13 @@ const Auth = () => {
     }
     setLoading(true);
 
+    const usePhone = isPhone(identifier);
+    const credentials = usePhone
+      ? { phone: identifier.replace(/[\s()-]/g, ""), password }
+      : { email: identifier, password };
+
     try {
       if (isLogin) {
-        const credentials = authMethod === "email"
-          ? { email, password }
-          : { phone, password };
         const { error } = await supabase.auth.signInWithPassword(credentials);
         if (error) {
           if (error.message === "Invalid login credentials") {
@@ -50,13 +52,13 @@ const Auth = () => {
           }
           throw error;
         }
-        toast({ title: "Добро пожаловать!" });
+        toast({ title: "Добро пожаловать!", duration: 3000 });
         navigate("/profile");
       } else {
-        const signUpData = authMethod === "email"
-          ? { email, password, options: { emailRedirectTo: window.location.origin } }
-          : { phone, password };
-        const { data, error } = await supabase.auth.signUp(signUpData);
+        const signUpData = usePhone
+          ? { phone: credentials.phone!, password }
+          : { email: credentials.email!, password, options: { emailRedirectTo: window.location.origin } };
+        const { data, error } = await supabase.auth.signUp(signUpData as any);
         if (error) throw error;
 
         if (referralCode) {
@@ -64,16 +66,12 @@ const Auth = () => {
         }
 
         if (data.user) {
-          toast({ title: "Аккаунт создан! Добро пожаловать!" });
+          toast({ title: "Аккаунт создан! Добро пожаловать!", duration: 3000 });
           navigate("/profile");
         }
       }
     } catch (error: any) {
-      toast({
-        title: "Ошибка",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Ошибка", description: error.message, variant: "destructive", duration: 5000 });
     } finally {
       setLoading(false);
     }
@@ -101,7 +99,6 @@ const Auth = () => {
               </p>
             </div>
 
-            {/* Not registered alert */}
             {showNotRegistered && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -121,62 +118,19 @@ const Auth = () => {
               </motion.div>
             )}
 
-            {/* Auth method toggle */}
-            <div className="mb-4 flex rounded-lg bg-muted/50 p-1">
-              <button
-                type="button"
-                onClick={() => setAuthMethod("email")}
-                className={`flex-1 flex items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition-colors ${
-                  authMethod === "email" ? "bg-primary/20 text-primary" : "text-muted-foreground"
-                }`}
-              >
-                <Mail className="h-3.5 w-3.5" /> Email
-              </button>
-              <button
-                type="button"
-                onClick={() => setAuthMethod("phone")}
-                className={`flex-1 flex items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition-colors ${
-                  authMethod === "phone" ? "bg-primary/20 text-primary" : "text-muted-foreground"
-                }`}
-              >
-                <Phone className="h-3.5 w-3.5" /> Телефон
-              </button>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
-              {authMethod === "email" ? (
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-muted-foreground">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      required
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="bg-muted/50 border-border/50 pl-10"
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-muted-foreground">Номер телефона</Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      id="phone"
-                      type="tel"
-                      required
-                      placeholder="+7 (999) 123-45-67"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="bg-muted/50 border-border/50 pl-10"
-                    />
-                  </div>
-                </div>
-              )}
+              <div className="space-y-2">
+                <Label htmlFor="identifier" className="text-muted-foreground">Email или телефон</Label>
+                <Input
+                  id="identifier"
+                  type="text"
+                  required
+                  placeholder="you@example.com или +79991234567"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  className="bg-muted/50 border-border/50"
+                />
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-muted-foreground">Пароль</Label>
@@ -201,7 +155,6 @@ const Auth = () => {
                 </div>
               </div>
 
-              {/* Privacy checkbox for registration */}
               {!isLogin && (
                 <div className="flex items-start gap-2">
                   <Checkbox
