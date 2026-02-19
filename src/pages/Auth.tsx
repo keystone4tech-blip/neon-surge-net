@@ -20,6 +20,7 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [showNotRegistered, setShowNotRegistered] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -28,6 +29,8 @@ const Auth = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowNotRegistered(false);
+
     if (!isLogin && !privacyAccepted) {
       toast({ title: "Необходимо принять политику конфиденциальности", variant: "destructive" });
       return;
@@ -40,24 +43,30 @@ const Auth = () => {
           ? { email, password }
           : { phone, password };
         const { error } = await supabase.auth.signInWithPassword(credentials);
-        if (error) throw error;
+        if (error) {
+          if (error.message === "Invalid login credentials") {
+            setShowNotRegistered(true);
+            return;
+          }
+          throw error;
+        }
         toast({ title: "Добро пожаловать!" });
         navigate("/profile");
       } else {
         const signUpData = authMethod === "email"
           ? { email, password, options: { emailRedirectTo: window.location.origin } }
           : { phone, password };
-        const { error } = await supabase.auth.signUp(signUpData);
+        const { data, error } = await supabase.auth.signUp(signUpData);
         if (error) throw error;
 
         if (referralCode) {
           localStorage.setItem("pending_referral", referralCode);
         }
 
-        toast({
-          title: "Аккаунт создан!",
-          description: authMethod === "email" ? "Проверьте email для подтверждения." : "Вы зарегистрированы!",
-        });
+        if (data.user) {
+          toast({ title: "Аккаунт создан! Добро пожаловать!" });
+          navigate("/profile");
+        }
       }
     } catch (error: any) {
       toast({
@@ -91,6 +100,26 @@ const Auth = () => {
                 {isLogin ? "Войдите в аккаунт MozhnoVPN" : "Создайте аккаунт и получите 7 дней бесплатно"}
               </p>
             </div>
+
+            {/* Not registered alert */}
+            {showNotRegistered && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center"
+              >
+                <p className="text-sm text-foreground mb-2">
+                  Аккаунт не найден. Возможно, вы ещё не зарегистрированы.
+                </p>
+                <Button
+                  variant="cyber"
+                  size="sm"
+                  onClick={() => { setIsLogin(false); setShowNotRegistered(false); }}
+                >
+                  Зарегистрироваться
+                </Button>
+              </motion.div>
+            )}
 
             {/* Auth method toggle */}
             <div className="mb-4 flex rounded-lg bg-muted/50 p-1">
@@ -205,7 +234,7 @@ const Auth = () => {
 
             <div className="mt-6 text-center">
               <button
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => { setIsLogin(!isLogin); setShowNotRegistered(false); }}
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 {isLogin ? "Нет аккаунта? Зарегистрируйтесь" : "Уже есть аккаунт? Войдите"}

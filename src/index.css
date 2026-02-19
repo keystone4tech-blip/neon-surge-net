@@ -173,6 +173,22 @@
     z-index: 0;
     overflow: hidden;
   }
+
+  /* Animated gradient text for mobile navbar */
+  .animated-gradient-text {
+    background: linear-gradient(
+      90deg,
+      hsl(186 100% 50%),
+      hsl(280 98% 54%),
+      hsl(320 100% 60%),
+      hsl(186 100% 50%)
+    );
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-slide 3s linear infinite;
+  }
 }
 
 @keyframes glitch {

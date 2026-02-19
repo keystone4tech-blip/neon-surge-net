@@ -33,8 +33,8 @@ const Navbar = () => {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20 neon-border-cyan">
               <Shield className="h-4 w-4 text-primary" />
             </div>
-            <span className="font-display text-sm font-bold tracking-widest text-foreground">
-              Mozhno<span className="text-primary">VPN</span>
+            <span className="font-display text-sm font-bold tracking-widest md:text-foreground animated-gradient-text">
+              MozhnoVPN
             </span>
           </Link>
 
