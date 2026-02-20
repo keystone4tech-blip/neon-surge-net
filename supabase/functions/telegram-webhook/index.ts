@@ -189,7 +189,7 @@ async function handleReferral(chatId: number, telegramId: number) {
   if (!profile) { await sendMessage(chatId, "❌ Аккаунт не привязан."); return; }
 
   const siteUrl = `https://neon-surge-net.lovable.app/auth?ref=${profile.referral_code}`;
-  const botUrl = `https://t.me/MozhnoVPNBot?start=ref_${profile.referral_code}`;
+  const botUrl = `https://t.me/MozhnoVPN_bot?start=ref_${profile.referral_code}`;
   await sendMessage(chatId, `🔗 <b>Реферальные ссылки:</b>\n\n🌐 ${siteUrl}\n🤖 ${botUrl}\n\n+3 дня за каждого друга!`);
 }
 

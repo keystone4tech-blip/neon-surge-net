@@ -88,7 +88,7 @@ const ProfileDashboard = () => {
   const telegramLinked = !!(profile as any)?.telegram_id;
   const referralCode = profile?.referral_code;
   const siteRefLink = referralCode ? `https://neon-surge-net.lovable.app/auth?ref=${referralCode}` : "";
-  const botRefLink = referralCode ? `https://t.me/MozhnoVPNBot?start=ref_${referralCode}` : "";
+  const botRefLink = referralCode ? `https://t.me/MozhnoVPN_bot?start=ref_${referralCode}` : "";
 
   return (
     <div className="space-y-6">
@@ -180,7 +180,7 @@ const ProfileDashboard = () => {
 
             {linkCode ? (
               <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-center space-y-2">
-                <p className="text-xs text-muted-foreground">Отправьте этот код боту @MozhnoVPNBot:</p>
+                <p className="text-xs text-muted-foreground">Отправьте этот код боту @MozhnoVPN_bot:</p>
                 <div className="flex items-center justify-center gap-2">
                   <code className="text-2xl font-mono font-bold text-primary tracking-widest">{linkCode}</code>
                   <Button variant="ghost" size="sm" onClick={() => copyToClipboard(`/link ${linkCode}`)}>
@@ -197,7 +197,7 @@ const ProfileDashboard = () => {
                     <RefreshCw className="h-3.5 w-3.5 mr-1" /> Новый код
                   </Button>
                   <Button variant="cyber" size="sm" asChild>
-                    <a href="https://t.me/MozhnoVPNBot" target="_blank" rel="noopener noreferrer">
+                    <a href="https://t.me/MozhnoVPN_bot" target="_blank" rel="noopener noreferrer">
                       Открыть бот
                     </a>
                   </Button>
