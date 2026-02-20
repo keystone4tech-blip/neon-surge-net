@@ -67,6 +67,7 @@ export type Database = {
           phone: string | null
           referral_code: string | null
           referred_by: string | null
+          telegram_id: number | null
           updated_at: string
           user_id: string
         }
@@ -78,6 +79,7 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by?: string | null
+          telegram_id?: number | null
           updated_at?: string
           user_id: string
         }
@@ -89,6 +91,7 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by?: string | null
+          telegram_id?: number | null
           updated_at?: string
           user_id?: string
         }
@@ -243,6 +246,33 @@ export type Database = {
           price_rub?: number
           priority?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      telegram_link_codes: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          used: boolean
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          used?: boolean
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          used?: boolean
+          user_id?: string
         }
         Relationships: []
       }
