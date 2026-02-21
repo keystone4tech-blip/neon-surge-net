@@ -67,7 +67,10 @@ export type Database = {
           phone: string | null
           referral_code: string | null
           referred_by: string | null
+          telegram_first_name: string | null
           telegram_id: number | null
+          telegram_last_name: string | null
+          telegram_username: string | null
           updated_at: string
           user_id: string
         }
@@ -79,7 +82,10 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by?: string | null
+          telegram_first_name?: string | null
           telegram_id?: number | null
+          telegram_last_name?: string | null
+          telegram_username?: string | null
           updated_at?: string
           user_id: string
         }
@@ -91,7 +97,10 @@ export type Database = {
           phone?: string | null
           referral_code?: string | null
           referred_by?: string | null
+          telegram_first_name?: string | null
           telegram_id?: number | null
+          telegram_last_name?: string | null
+          telegram_username?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -326,6 +335,57 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      vpn_keys: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          server_id: string | null
+          source: string
+          subscription_id: string | null
+          user_id: string
+          vpn_key: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          server_id?: string | null
+          source?: string
+          subscription_id?: string | null
+          user_id: string
+          vpn_key: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          server_id?: string | null
+          source?: string
+          subscription_id?: string | null
+          user_id?: string
+          vpn_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vpn_keys_server_id_fkey"
+            columns: ["server_id"]
+            isOneToOne: false
+            referencedRelation: "servers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vpn_keys_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

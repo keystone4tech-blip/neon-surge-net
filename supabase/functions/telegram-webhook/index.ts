@@ -19,6 +19,15 @@ async function sendMessage(chatId: number, text: string, opts: Record<string, un
   });
 }
 
+function saveTelegramInfo(userId: string, from: any) {
+  return supabase.from("profiles").update({
+    telegram_id: from.id,
+    telegram_username: from.username || null,
+    telegram_first_name: from.first_name || null,
+    telegram_last_name: from.last_name || null,
+  }).eq("user_id", userId);
+}
+
 async function handleStart(chatId: number, telegramId: number, startPayload: string) {
   const { data: existing } = await supabase
     .from("profiles")
@@ -46,7 +55,7 @@ async function handleStart(chatId: number, telegramId: number, startPayload: str
   );
 }
 
-async function handleLink(chatId: number, telegramId: number, code: string) {
+async function handleLink(chatId: number, telegramId: number, code: string, from: any) {
   if (!code) {
     await sendMessage(chatId, "❌ Укажите код: /link ВАШ_КОД");
     return;
@@ -55,7 +64,7 @@ async function handleLink(chatId: number, telegramId: number, code: string) {
   const { data: linkCode } = await supabase
     .from("telegram_link_codes")
     .select("*")
-    .eq("code", code.toUpperCase())
+    .eq("code", code.trim())
     .eq("used", false)
     .gt("expires_at", new Date().toISOString())
     .maybeSingle();
@@ -76,9 +85,15 @@ async function handleLink(chatId: number, telegramId: number, code: string) {
     return;
   }
 
+  // Save telegram info including username, first/last name
   const { error: updateError } = await supabase
     .from("profiles")
-    .update({ telegram_id: telegramId })
+    .update({
+      telegram_id: telegramId,
+      telegram_username: from.username || null,
+      telegram_first_name: from.first_name || null,
+      telegram_last_name: from.last_name || null,
+    })
     .eq("user_id", linkCode.user_id);
 
   if (updateError) {
@@ -90,7 +105,7 @@ async function handleLink(chatId: number, telegramId: number, code: string) {
   await sendMessage(chatId, "✅ Аккаунт успешно привязан!");
 }
 
-async function handleRegister(chatId: number, telegramId: number, args: string, firstName: string, startPayload?: string) {
+async function handleRegister(chatId: number, telegramId: number, args: string, from: any, startPayload?: string) {
   const parts = args.trim().split(/\s+/);
   if (parts.length < 2) {
     await sendMessage(chatId, "❌ Формат: /register email@example.com ваш_пароль\nИли: /register +79991234567 ваш_пароль");
@@ -119,7 +134,7 @@ async function handleRegister(chatId: number, telegramId: number, args: string, 
     ...signUpData,
     email_confirm: true,
     phone_confirm: true,
-    user_metadata: { display_name: firstName },
+    user_metadata: { display_name: from.first_name || "User" },
   });
 
   if (authError) {
@@ -132,7 +147,8 @@ async function handleRegister(chatId: number, telegramId: number, args: string, 
   }
 
   if (authData.user) {
-    await supabase.from("profiles").update({ telegram_id: telegramId }).eq("user_id", authData.user.id);
+    // Save telegram user info
+    await saveTelegramInfo(authData.user.id, from);
 
     // Handle referral if present
     if (startPayload?.startsWith("ref_")) {
@@ -222,15 +238,15 @@ Deno.serve(async (req) => {
     const chatId = message.chat.id;
     const telegramId = message.from.id;
     const text = message.text.trim();
-    const firstName = message.from.first_name || "User";
+    const from = message.from;
 
     if (text.startsWith("/start")) {
       const payload = text.replace("/start", "").trim();
       await handleStart(chatId, telegramId, payload);
     } else if (text.startsWith("/link")) {
-      await handleLink(chatId, telegramId, text.replace("/link", "").trim());
+      await handleLink(chatId, telegramId, text.replace("/link", "").trim(), from);
     } else if (text.startsWith("/register")) {
-      await handleRegister(chatId, telegramId, text.replace("/register", "").trim(), firstName);
+      await handleRegister(chatId, telegramId, text.replace("/register", "").trim(), from);
     } else if (text === "/help") {
       await sendMessage(chatId,
         `<b>MozhnoVPN Bot:</b>\n/start — Начать\n/link КОД — Привязать аккаунт\n/register email пароль — Регистрация\n/status — Подписка\n/referral — Реф. ссылки\n/help — Помощь`);

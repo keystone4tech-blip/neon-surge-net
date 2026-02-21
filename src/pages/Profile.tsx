@@ -13,13 +13,13 @@ const Profile = () => {
   if (!user) return <Navigate to="/auth" replace />;
 
   return (
-    <div className="min-h-screen bg-background cyber-grid pb-16 md:pb-0">
+    <div className="min-h-screen bg-background cyber-grid pb-20 md:pb-0">
       <Navbar />
-      <div className="container mx-auto px-4 pt-24 pb-20">
+      <div className="container mx-auto px-3 sm:px-4 pt-20 sm:pt-24 pb-20">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 font-display text-3xl font-bold tracking-wider text-foreground"
+          className="mb-6 font-display text-2xl sm:text-3xl font-bold tracking-wider text-foreground"
         >
           Профиль
         </motion.h1>
