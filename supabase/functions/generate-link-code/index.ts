@@ -35,11 +35,10 @@ Deno.serve(async (req) => {
 
   const userId = claims.claims.sub;
 
-  // Generate 6-char alphanumeric code
-  const code = Array.from(crypto.getRandomValues(new Uint8Array(4)))
-    .map((b) => b.toString(36).toUpperCase())
-    .join("")
-    .slice(0, 6);
+  // Generate 16-char cryptographically secure code (base62)
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  const code = Array.from(bytes).map((b) => chars[b % chars.length]).join("");
 
   const supabaseAdmin = createClient(
     Deno.env.get("SUPABASE_URL")!,
